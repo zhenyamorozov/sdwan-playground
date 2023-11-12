@@ -10,13 +10,25 @@
         method: POST
         body_format: form-urlencoded
         body:
-          j_username: "{{ j_username }}"
-          j_password: "{{ j_password }}"
+          j_username: "{{ username }}"
+          j_password: "{{ password }}"
         return_content: yes
-        # validate_certs: no
+        validate_certs: no
       register: post_response
     - name: PRINT RESULT
       debug:
         var: post_response
+    - name: SAVE SESSION COOKIE IN A VARIABLE
+      set_fact:
+        vmanage_cookie: "{{ post_response.set_cookie }}"
+    - name: PRINT SAVED COOKIE
+      debug:
+        var: vmanage_cookie
+
+    - name: PAUSE FOR 3 SECONDS
+      pause:
+        seconds: 3
+
+      
 
 
