@@ -1,0 +1,22 @@
+---
+- name: CONSUME SDWAN API WITH uri MODULE
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: GET AUTH COOKIE WITH POST REQUEST
+      uri:
+        url: "https://{{ inventory_hostname }}/j_security_check"
+        method: POST
+        body_format: form-urlencoded
+        body:
+          j_username: "{{ j_username }}"
+          j_password: "{{ j_password }}"
+        return_content: yes
+        # validate_certs: no
+      register: post_response
+    - name: PRINT RESULT
+      debug:
+        var: post_response
+
+

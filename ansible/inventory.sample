@@ -1,0 +1,6 @@
+[all:vars]
+username=admin
+password=admin
+
+[sdwan]
+vmanage 
