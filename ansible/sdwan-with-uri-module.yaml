@@ -12,8 +12,8 @@
         body:
           j_username: "{{ username }}"
           j_password: "{{ password }}"
-        return_content: yes
         validate_certs: no
+        return_content: yes
       register: post_response
     - name: PRINT RESULT
       debug:
@@ -28,6 +28,49 @@
     - name: PAUSE FOR 3 SECONDS
       pause:
         seconds: 3
+
+    - name: GET LIST OF FABRIC DEVICES
+      uri:
+        url: "https://{{ inventory_hostname }}/dataservice/system/device/vedges"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      register: devices_list
+    # - name: PRINT_LIST_OF_DEVICES1
+    #   debug:
+    #     var: devices_list.json.data
+    - name: PRINT_LIST_OF_DEVICES
+      debug:
+        # var: item
+        msg: "{{ item['name'] }} {{ item['system-ip'] }}"  # message to print for each item, must use bracket notation due to -
+      with_items: "{{ devices_list.json.data }}"  # this becomes the 'item'
+      loop_control:
+        label: "{{ item.serialNumber }}"  # print serial number as a label
+      when: "'name' in item"  # only print if 'name' key exists, skip otherwise
+
+
+
+# - name: EXAMINE REBOOT HISTORY
+#   hosts: all
+#   connection: local
+#   gather_facts: no
+#   tasks:
+#     - name: GET REBOOT HISTORY DETAILS
+#       uri:
+#         url: "https://{{ inventory_hostname }}/dataservice/device/reboothistory"
+#         method: GET
+#         headers:
+#           Cookie: "{{ vmanage_cookie }}"
+#         validate_certs: no
+#         return_content: yes
+#       register: reboot_history
+#     - name: PRINT_REBOOT_HISTORY
+#       debug:
+#         var: reboot_history
+
+
 
       
 
