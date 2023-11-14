@@ -55,12 +55,13 @@
 
     - name: SET INTERESTING DEVICE ID
       set_fact:
-        deviceId: "{{ devices_list.json.data[9].deviceIP }}"
+        # 0 or 1 or 9 in this lab
+        deviceId: "{{ devices_list.json.data[1].deviceIP }}"
 
 
 
 
-- name: EXAMINE REBOOT HISTORY
+- name: Check SELECTED DEVICE
   hosts: all
   connection: local
   gather_facts: no
@@ -78,13 +79,7 @@
       debug:
         var: reboot_history.json.data
 
-
-- name: MONITOR VPN TUNNELS STATISTICS
-  hosts: all
-  connection: local
-  gather_facts: no 
-  tasks:
-    - name: GET TUNNEL STATS
+    - name: GET VPN TUNNEL STATS
       uri:
         url: "https://{{ inventory_hostname }}\
           /dataservice/device/tunnel/statistics?deviceId={{ deviceId }}"
@@ -98,11 +93,6 @@
       debug:
         var: tunnel_stats.json.data
 
-- name: CHECK DEVICE HEALTH INFORMATION
-  hosts: all
-  connection: local
-  gather_facts: no 
-  tasks:
     - name: GET DEVICE SYSTEM STATUS
       uri:
         url: "https://{{ inventory_hostname }}\
@@ -122,9 +112,23 @@
           RAM Used: {{ device_status.json.data[0]['mem_used'] }} | \
           Disk Used: {{ device_status.json.data[0]['disk_used'] }}\
           "
-
-
-
+    - name: GET ROUTING TABLE DETAILS
+      uri:
+        url: "https://{{ inventory_hostname }}\
+          /dataservice/device/ip/routetable?deviceId={{ deviceId }}"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      register: routing_data
+    - name: PRINT ROUTING TABLE
+      debug:
+        var: routing_data.json.data
+    - name: PRINT NUMBER OF ROUTES
+      debug:
+        var: routing_data.json.data | length
+        
       
 
 
