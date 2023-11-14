@@ -38,9 +38,9 @@
         validate_certs: no
         return_content: yes
       register: devices_list
-    # - name: PRINT_LIST_OF_DEVICES1
-    #   debug:
-    #     var: devices_list.json.data
+    - name: PRINT_LIST_OF_DEVICES1
+      debug:
+        var: devices_list.json.data
     - name: PRINT_LIST_OF_DEVICES
       debug:
         # var: item
@@ -50,25 +50,34 @@
         label: "{{ item.serialNumber }}"  # print serial number as a label
       when: "'name' in item"  # only print if 'name' key exists, skip otherwise
 
+    # - name: COLLECT LIST OF DEVICE IPS
+    #   with_items: "{{ devices_list.json.data }}"
 
 
-# - name: EXAMINE REBOOT HISTORY
-#   hosts: all
-#   connection: local
-#   gather_facts: no
-#   tasks:
-#     - name: GET REBOOT HISTORY DETAILS
-#       uri:
-#         url: "https://{{ inventory_hostname }}/dataservice/device/reboothistory"
-#         method: GET
-#         headers:
-#           Cookie: "{{ vmanage_cookie }}"
-#         validate_certs: no
-#         return_content: yes
-#       register: reboot_history
-#     - name: PRINT_REBOOT_HISTORY
-#       debug:
-#         var: reboot_history
+
+
+
+- name: EXAMINE REBOOT HISTORY
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: SET INTERESTING DEVICE ID
+      set_fact:
+        deviceId: "{{ devices_list.json.data[9].deviceIP }}"
+
+    - name: GET REBOOT HISTORY DETAILS
+      uri:
+        url: "https://{{ inventory_hostname }}/dataservice/device/reboothistory?deviceId={{ deviceId }}"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      register: reboot_history
+    - name: PRINT_REBOOT_HISTORY
+      debug:
+        var: reboot_history.json.data
 
 
 
