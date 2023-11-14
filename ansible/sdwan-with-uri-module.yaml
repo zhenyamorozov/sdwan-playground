@@ -169,9 +169,9 @@
           RAM Used: {{ item.json.data[0]['mem_used'] }} | \
           Disk Used: {{ item.json.data[0]['disk_used'] }}\
           "
-      loop: "{{ device_status.results }}"
+      loop: "{{ device_status.results }}" # items in this list become the 'item'
       loop_control:
-        label: "{{ item.item }}"
+        label: "{{ item.item }}" # that makes item labels simpler
 
 
       
