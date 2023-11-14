@@ -27,7 +27,7 @@
 
     - name: PAUSE FOR 3 SECONDS
       pause:
-        seconds: 3
+        seconds: 1
 
     - name: GET LIST OF FABRIC DEVICES
       uri:
@@ -53,6 +53,9 @@
     # - name: COLLECT LIST OF DEVICE IPS
     #   with_items: "{{ devices_list.json.data }}"
 
+    - name: SET INTERESTING DEVICE ID
+      set_fact:
+        deviceId: "{{ devices_list.json.data[9].deviceIP }}"
 
 
 
@@ -62,10 +65,6 @@
   connection: local
   gather_facts: no
   tasks:
-    - name: SET INTERESTING DEVICE ID
-      set_fact:
-        deviceId: "{{ devices_list.json.data[9].deviceIP }}"
-
     - name: GET REBOOT HISTORY DETAILS
       uri:
         url: "https://{{ inventory_hostname }}/dataservice/device/reboothistory?deviceId={{ deviceId }}"
@@ -78,6 +77,51 @@
     - name: PRINT_REBOOT_HISTORY
       debug:
         var: reboot_history.json.data
+
+
+- name: MONITOR VPN TUNNELS STATISTICS
+  hosts: all
+  connection: local
+  gather_facts: no 
+  tasks:
+    - name: GET TUNNEL STATS
+      uri:
+        url: "https://{{ inventory_hostname }}\
+          /dataservice/device/tunnel/statistics?deviceId={{ deviceId }}"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      register: tunnel_stats
+    - name: PRINT TUNNEL STATISTICS
+      debug:
+        var: tunnel_stats.json.data
+
+- name: CHECK DEVICE HEALTH INFORMATION
+  hosts: all
+  connection: local
+  gather_facts: no 
+  tasks:
+    - name: GET DEVICE SYSTEM STATUS
+      uri:
+        url: "https://{{ inventory_hostname }}\
+          /dataservice/device/system/status?deviceId={{ deviceId }}"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      register: device_status
+    - name: PRINT DEVICE STATUS INFO
+      debug:
+        # var: device_status
+        msg: "Hostname: {{ device_status.json.data[0]['vdevice-host-name'] }} | \
+          CPU System: {{ device_status.json.data[0]['cpu_system'] }} | \
+          CPU User: {{ device_status.json.data[0]['cpu_user'] }} | \
+          RAM Used: {{ device_status.json.data[0]['mem_used'] }} | \
+          Disk Used: {{ device_status.json.data[0]['disk_used'] }}\
+          "
 
 
 
