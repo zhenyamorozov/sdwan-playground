@@ -59,9 +59,7 @@
         deviceId: "{{ devices_list.json.data[1].deviceIP }}"
 
 
-
-
-- name: Check SELECTED DEVICE
+- name: CHECK SELECTED DEVICE
   hosts: all
   connection: local
   gather_facts: no
@@ -128,7 +126,54 @@
     - name: PRINT NUMBER OF ROUTES
       debug:
         var: routing_data.json.data | length
-        
+
+
+- name: GET MULTIPLE DEVICES INFO
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+
+    - name: CREATE A LIST OF INTERESTING DEVICES
+      set_fact:
+        interesting_devices: "{{ devices_list | json_query(query) }}"
+      vars:
+        query: "json.data[*].deviceIP"
+    - name: PRINT LIST OF DEVICES
+      debug:
+        var: interesting_devices
+
+    # - name: PR
+    #   debug:
+    #     var: "{{ item }}"
+    #   loop: "{{ interesting_devices }}"
+
+
+    - name: GET MULTIPLE DEVICES SYSTEM STATUS
+      uri:
+        url: "https://{{ inventory_hostname }}\
+          /dataservice/device/system/status?deviceId={{ item }}"
+        method: GET
+        headers:
+          Cookie: "{{ vmanage_cookie }}"
+        validate_certs: no
+        return_content: yes
+      loop: "{{ interesting_devices }}"
+      register: device_status
+    - name: PRINT DEVICE STATUS INFO
+      debug:
+        # var: device_status.results
+        msg: "Hostname: {{ item.json.data[0]['vdevice-host-name'] }} | \
+          CPU System: {{ item.json.data[0]['cpu_system'] }} | \
+          CPU User: {{ item.json.data[0]['cpu_user'] }} | \
+          RAM Used: {{ item.json.data[0]['mem_used'] }} | \
+          Disk Used: {{ item.json.data[0]['disk_used'] }}\
+          "
+      loop: "{{ device_status.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+
       
 
 
