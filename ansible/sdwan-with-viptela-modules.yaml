@@ -1,0 +1,71 @@
+---
+- name: CHECK POLICY CONFIGURATION
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  # roles:
+  #   - ansible-viptela
+
+  tasks:
+    - name: GET POLICY LISTS
+      vmanage_policy_list_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: lists_facts
+    - name: PRINT POLICY LISTS
+      debug:
+        var: lists_facts.policy_lists | selectattr('type', 'match', '(site|vpn)')
+
+
+    - name: GATHER CONFIGURED POLICY DEFINITIONS
+      vmanage_policy_definition_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: definitions_facts
+    - name: PRINT POLICY DEFINITIONS
+      debug:
+        var: definitions_facts.policy_definitions
+
+    
+    - name: GATHER CONFIGURED CENTRAL POLICIES
+      vmanage_central_policy_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: central_policies_facts
+    - name: PRINT CENTRAL POLICIES
+      debug:
+        var: central_policies_facts
+
+
+- name: USE TEMPLATES TO GENERATE REPORTS
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: ENSURE REPORTS FOLDER EXISTS
+      file:
+        path: ./reports
+        state: directory
+    - name: GATHER VMANAGE INVENTORY
+      vmanage_device_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: devices
+    - debug:
+        var: devices
+    - name: BUILD DEVICES TABLE WITH TEMPLATE
+      template:
+        src: device_table.j2
+        dest: reports/devices.txt
+
+
+

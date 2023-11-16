@@ -1,0 +1,5 @@
+# Install a role from a specific git branch
+# - name: ansible-viptela
+  - src: https://github.com/CiscoDevNet/python-viptela
+  # version: origin/master
+  

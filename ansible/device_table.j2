@@ -1,0 +1,14 @@
++--------------------------------------------------------------------------------------------------------------+
+| Hostname   | Device Type | Device ID                                | System IP  | Site ID | Version         |
++--------------------------------------------------------------------------------------------------------------+
+{% set controllers = devices.get('controllers', []) %}
+| Controllers ({{ controllers|length }})                                                                                              |
+{% for c in controllers %}
+| {{ "{:<10}".format(c.get('host-name')) }} | {{ "{:<11}".format(c.get('deviceType')) }} | {{ "{:40}".format(c.get('uuid')) }} | {{ "{:>10}".format(c.get('system-ip')) }} | {{ "{:<7}".format(c.get('site-id')) }} | {{ "{:>15}".format(c.get('version')) }} |
+{% endfor %}
+{% set devices = devices.get('vedges', []) %}
+| Devices ({{ devices|length }})                                                                                                 |
+{% for d in devices %}
+| {{ "{:<10}".format(d.get('host-name')|string) }} | {{ "{:<11}".format(d.get('deviceType')|string) }} | {{ "{:40}".format(d.get('uuid')|string) }} | {{ "{:>10}".format(d.get('system-ip')|string) }} | {{ "{:<7}".format(d.get('site-id')|string) }} | {{ "{:>15}".format(d.get('version')|string) }} |
+{% endfor %}
++--------------------------------------------------------------------------------------------------------------+
