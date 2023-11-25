@@ -1,0 +1,37 @@
++======================= Device Templates =======================+
+| Name:             emorozov-c8000v-template                     |
+| Description:      This template is for C8000v routers          |
+| Attached devices: []                                           |
+| Device Type:      vedge-C8000V                                 |
+| Template ID:      3d3ce8d0-3bac-4a79-a221-5a4f8bc29a3a         |
++----------------------------------------------------------------+
+| Name:             emorozov-4221-template                       |
+| Description:      This template is for ISR4221 routers         |
+| Attached devices: []                                           |
+| Device Type:      vedge-ISR-4221                               |
+| Template ID:      72603c3b-ac95-404b-af91-9f17ea4e36ee         |
++====================== Feature Templates =======================+
+| Name:             emorozov-aaa-template                        |
+| Description:      This template uses old usernames             |
+| Type:             cedge_aaa                                    |
+| Attached devices: 0                                            |
+| Minimum version:  15.0.0                                       |
+| Device type:      ['vedge-ISR-4331', 'vedge-ISR-4321', 'vedge- |
+| Template ID:      467d1b3e-ba14-475b-b596-81b1e40b2626         |
++----------------------------------------------------------------+
+| Name:             emorozov-aaa-new-template                    |
+| Description:      This template uses new usernames             |
+| Type:             cedge_aaa                                    |
+| Attached devices: 0                                            |
+| Minimum version:  15.0.0                                       |
+| Device type:      ['vedge-ISR-4331', 'vedge-ISR-4321', 'vedge- |
+| Template ID:      480f61de-9964-41de-883b-b0ae6ee16d6c         |
++----------------------------------------------------------------+
+| Name:             emorozov-banner                              |
+| Description:      This is a banner feature template            |
+| Type:             cisco_banner                                 |
+| Attached devices: 0                                            |
+| Minimum version:  15.0.0                                       |
+| Device type:      ['vedge-ISR-4221', 'vedge-C8000V']           |
+| Template ID:      3e5ccc28-d8c7-4364-b979-f17c6db3f462         |
++================================================================+

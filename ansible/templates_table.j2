@@ -1,0 +1,25 @@
++======================= Device Templates =======================+
+{% for dt in device_templates.device_templates %}
+| Name:             {{ "{:44}".format(dt.templateName) }} |
+| Description:      {{ "{:44}".format(dt.templateDescription) }} |
+| Attached devices: {{ "{:44}".format(dt.attached_devices|string) }} |
+| Device Type:      {{ "{:44}".format(dt.deviceType) }} |
+| Template ID:      {{ "{:44}".format(dt.templateId) }} |
+{% if not loop.last %}
++----------------------------------------------------------------+
+{% endif %}
+{% endfor %}
++====================== Feature Templates =======================+
+{% for ft in feature_templates.feature_templates %}
+| Name:             {{ "{:44}".format(ft.templateName) }} |
+| Description:      {{ "{:44}".format(ft.templateDescription) }} |
+| Type:             {{ "{:44}".format(ft.templateType) }} |
+| Attached devices: {{ "{:<44}".format(ft.devicesAttached) }} |
+| Minimum version:  {{ "{:44}".format(ft.templateMinVersion) }} |
+| Device type:      {{ "{:44.44}".format(ft.deviceType|string) }} |
+| Template ID:      {{ "{:44}".format(ft.templateId) }} |
+{% if not loop.last %}
++----------------------------------------------------------------+
+{% endif %}
+{% endfor %}
++================================================================+

@@ -1,0 +1,19 @@
++--------------------------------------------------------------------------------------------------------------+
+| Hostname   | Device Type | Device ID                                | System IP  | Site ID | Version         |
++--------------------------------------------------------------------------------------------------------------+
+| Controllers (3)                                                                                              |
+| vBond01    | vbond       | 7dae3e4f-e31d-43cf-8bb7-b40684ad8fce     |   10.1.1.2 | 2       |         20.12.1 |
+| vManage    | vmanage     | f684199a-3c0c-4e47-8975-2393d6d9537a     |   10.1.1.1 | 2       |         20.12.1 |
+| vsmart     | vsmart      | 050a7e7f-173a-4c4e-b448-e7b7f999520c     |   10.1.1.3 | 2       |         20.12.1 |
+| Devices (10)                                                                                                 |
+| HQ_RO_01   | vedge       | C8K-E47AF9EF-1388-5840-D141-71F1F3D8D9C0 |  10.1.1.10 | 1       | 17.12.01a.0.118 |
+| Branch_01  | vedge       | C8K-29B80B24-540E-FAF4-4CF3-19470DE8F007 |  10.1.1.11 | 10      | 17.12.01a.0.118 |
+| None       | vedge       | C8K-682F8282-363E-8DFD-BF9A-01ED087F2395 |       None | None    |            None |
+| host_11119 | vedge       | C8K-0C4B5B74-3C28-66E0-AFEC-75676C1EF456 |       None | 10      |            None |
+| None       | vedge       | C8K-915D02BC-8AC9-C3AC-E2CD-BFD000C98C2A |       None | None    |            None |
+| None       | vedge       | C8K-CBD8EFEE-9944-2838-67B1-3D2E50AFC6E4 |       None | None    |            None |
+| None       | vedge       | C8K-D2FECE5B-498B-7A27-B9E0-8B2D86802389 |       None | None    |            None |
+| None       | vedge       | C8K-CA5620EE-5EE8-CB66-E8AA-2D59F1A9D527 |       None | None    |            None |
+| None       | vedge       | C8K-4380545C-406E-0F61-A7EB-6C2B1B01CDFE |       None | None    |            None |
+| HQ_RO_02   | vedge       | C8K-029D2FA7-426C-6797-C1F5-D58F9978B526 |  10.1.1.12 | 1       | 17.12.01a.0.118 |
++--------------------------------------------------------------------------------------------------------------+

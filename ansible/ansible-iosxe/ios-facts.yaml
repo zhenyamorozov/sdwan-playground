@@ -1,0 +1,18 @@
+---
+- name: Sample IOS playbook to retrieve facts
+  hosts: iosxe
+  gather_facts: no
+  
+  tasks:
+    - name: Retrieve IOS facts
+      cisco.ios.ios_facts:
+        gather_subset: all  # by defult, only retrieves 'min' - minimal facts
+        # Possible values for this argument include all, min, default, hardware, config, and interfaces.
+    
+    - name: Print version and serial number
+      debug:
+        msg: "The IOS version is: {{ ansible_net_version }} and the SN is: {{ ansible_net_serialnum }}"
+
+    - name: Print interface information
+      debug:
+        var: ansible_net_interfaces

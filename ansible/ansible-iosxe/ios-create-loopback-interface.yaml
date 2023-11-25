@@ -1,0 +1,19 @@
+---
+# Declarative module example: ios_interfaces
+- name: Creacet and address a loopback interface
+  hosts: iosxe
+  gather_facts: no
+
+  tasks:
+    - name: Create loopback {{subnet_id}}
+      cisco.ios.ios_interfaces:
+        config:
+          - name: Loopback{{subnet_id}}
+            description: Connection number {{subnet_id}}
+            enabled: yes
+    - name: Assign IP address to loopback {{subnet_id}}
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback{{subnet_id}}
+            ipv4:
+              - address: 10.111.{{subnet_id}}.1/32

@@ -1,0 +1,34 @@
+---
+# Use imperative and declarative modules to clean up configurations
+- name: Lab cleanup
+  hosts: iosxe
+  gather_facts: no
+
+  tasks:
+    # imperative
+    - name: Delete ACL via CLI
+      cisco.ios.ios_config:
+        lines:
+          - no ip access-list extended my_acl
+      ignore_errors: true
+      failed_when: false
+    - name: Delete NTP servers 10.1.{{subnet_id}}.{{item}} via CLI
+      cisco.ios.ios_config:
+        lines:
+          - no ntp server 10.1.{{subnet_id}}.{{item}}
+      loop: [11, 12, 13, 14]
+      ignore_errors: true
+      failed_when: false
+    #  declarative
+    - name: delete Loopback {{subnet_id}}
+      # the lab scenario is incorrect - 'state:absent' does not work
+      # cisco.ios.ios_interfaces:
+      #   name: Loopback{{subnet_id}}
+      #   enabled: True
+      #   state: absent
+      # this works:
+      cisco.ios.ios_interfaces:
+        config:
+          - name: Loopback{{subnet_id}}
+        state: purged
+      

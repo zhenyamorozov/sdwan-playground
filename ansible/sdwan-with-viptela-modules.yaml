@@ -60,12 +60,87 @@
         password: "{{ password }}"
       no_log: yes
       register: devices
-    - debug:
-        var: devices
-    - name: BUILD DEVICES TABLE WITH TEMPLATE
+    # - debug:
+    #     var: devices
+    - name: BUILD DEVICES TABLE WITH J2 TEMPLATE
       template:
         src: device_table.j2
         dest: reports/devices.txt
 
+    - name: GATHER DEVICE TEMPLATES
+      vmanage_device_template_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: device_templates
+    # - debug:
+    #     var: device_templates
+    - name: GATHER FEATURE TEMPLATES
+      vmanage_feature_template_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: feature_templates
+    # - debug:
+    #     var: feature_templates
+    - name: BUILD DEVICE TEMPLATES TABLE WITH J2 TEMPLATE
+      template:
+        src: templates_table.j2
+        dest: reports/device_feature_templates.txt
 
+- name: MANIPULATE FEATURE TEMPLATES
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: DISPLAY WHICH AAA FEATURE TEMPLATE IS CURRENTLY ATTACHED
+      vmanage_device_template_facts:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      no_log: yes
+      register: device_templates
+    - debug:
+        # var: device_templates.device_templates
+        msg: "{{ item | json_query('generalTemplates[?contains(templateName,`aaa`)].templateName') }}"
+      loop: "{{ device_templates.device_templates }}"
+      loop_control:
+        label: "{{ item.templateName }}"
+    # - debug:
+    #     msg: "{{  }}"
 
+    - name: SET TARGET FEATURE TEMPLATE
+      set_fact:
+        target_feature_template: "emorozov-aaa-new-template"
+        # target_feature_template: "emorozov-aaa-template"
+
+    - set_fact:
+        new_device_template: "{{ device_templates.device_templates[0] }}"
+
+    - debug:
+        var: new_device_template
+    
+    - ansible.utils.update_fact:
+        updates:
+          - path: new_device_template.generalTemplates[0].templateName
+            value: "emorozov-aaa-template"
+      register: new_device_template
+    
+    - debug:
+        var: new_device_template.new_device_template
+
+    - name: ENSURE THE TARGET FEATURE TEMPLATE IS ATTACHED TO ALL DEVICE TEMPLATES
+      vmanage_device_template:
+        host: "{{ inventory_hostname }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        name: "emorozov-c8000v-template"
+        # aggregate: "{{ [myjson.myjson] }}"
+        # templates: "{{ myjson.myjson.generalTemplates }}"
+        templates: "{{ ['emorozov-aaa-template'] }}"
+        description: "This is a new description"
+      no_log: no
+      # register: device_templates

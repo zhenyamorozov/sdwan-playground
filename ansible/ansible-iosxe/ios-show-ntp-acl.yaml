@@ -1,0 +1,21 @@
+---
+- name: Sample IOS playbook to 
+  hosts: iosxe
+  gather_facts: no
+
+  tasks:
+    - name: Run show ntp associations
+      cisco.ios.ios_command:
+        commands: show ntp associations
+      register: myntp
+    - name: Print my NTP
+      debug:
+        var: myntp.stdout_lines[0]
+
+    - name: Run show ip access-lists
+      cisco.ios.ios_command:
+        commands: show ip access-lists
+      register: myacl
+    - name: Print my ACL
+      debug:
+        var: myacl.stdout_lines[0]
